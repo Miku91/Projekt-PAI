@@ -81,7 +81,7 @@ public class MainUI extends VerticalLayout {
 
     @PostConstruct
     private void init() {
-        locationsRepository.deleteAll();
+        //locationsRepository.deleteAll();
         locationsSortedRepository.deleteAll();
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         SingleSelect<Grid<Locations>,Locations> skrytkaSingleSelect = grid.asSingleSelect();
@@ -173,19 +173,13 @@ public class MainUI extends VerticalLayout {
             List<Long> longs = TspCities.CalculateMatrix(distanceMatrix.usage(adresses));
             int xdd = 0;
             for(int i = 0; i <= locationsRepository.findTopByOrderByIdDesc().getId(); i++) {
-                //System.out.println("Longs: " + longs.get(i));
-
                 if (longs.get(xdd) == 0) {
-                    //System.out.println(location.getValue());
-                    //locationsSortedRepository.save(new LocationsSorted(longs.get(0), location.getValue()));
                     xdd++;
                 } else if (locationsRepository.existsById((long) i) && xdd<=longs.size()){
-                    //System.out.println("i: " + i + ", " + " xd: " + xdd);
-                    //System.out.println("id - "+longs.get(xdd)+", adres- "+adresHashMap.get(longs.get(xdd).intValue()));
                     locationsSortedRepository.save(new LocationsSorted( longs.get(xdd), adresHashMap.get(longs.get(xdd).intValue())));
                     xdd++;
                 } else {
-                    //System.out.println("Time No ID Exists " + i);
+                    //sout test
                 }
             }
             String textForLabel = new String();
@@ -200,14 +194,9 @@ public class MainUI extends VerticalLayout {
             List<Long> longs = VrpTimeWindows.CalculateMatrixTime(distanceMatrix.usage_time(adresses));
             int xd = 0;
             for(int i = 0; i <= locationsRepository.findTopByOrderByIdDesc().getId(); i++) {
-                //System.out.println("Longs: " + longs.get(i));
                 if (longs.get(xd) == 0) {
-                    //System.out.println(location.getValue());
-                    //locationsSortedRepository.save(new LocationsSorted(longs.get(0), location.getValue()));
                     xd++;
                 } else if (locationsRepository.existsById((long) i) && xd<=longs.size()){
-                    //System.out.println("i: " + i + " " + locationsRepository.getById(longs.get(xd)).getAdres() + " xd: " + xd);
-                    //System.out.println("id - "+longs.get(xd)+", adres- "+locationsRepository.getById(longs.get(xd)).getAdres());
                     locationsSortedRepository.save(new LocationsSorted( longs.get(xd), adresHashMap.get(longs.get(xd).intValue())));
                     xd++;
                 } else {

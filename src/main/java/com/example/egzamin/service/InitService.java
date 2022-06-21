@@ -3,6 +3,7 @@ package com.example.egzamin.service;
 import com.example.egzamin.models.Locations;
 import com.example.egzamin.models.Users;
 import com.example.egzamin.repository.LocationsRepository;
+import com.example.egzamin.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ public class InitService {
     @Autowired
     LocationsRepository locationsRepository;
 
+    @Autowired
+    UsersRepository usersRepository;
     @PostConstruct
     private void init() {
         log.info("init");

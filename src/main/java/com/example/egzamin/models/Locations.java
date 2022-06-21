@@ -20,8 +20,12 @@ public class Locations {
     @NotNull
     private String Adres;
 
-    public Locations (String adres){
+    @NotNull
+    private Long IdKuriera;
+
+    public Locations (String adres, Long idKuriera){
         this.Adres = adres;
+        this.IdKuriera = idKuriera;
     }
 
 }

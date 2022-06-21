@@ -14,7 +14,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="entityManagerFactory" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -64,8 +66,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:5.3.8" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-logging:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
@@ -287,5 +287,8 @@
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna-platform:5.8.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.19.1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-devtools:2.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.5.2" level="project" />
   </component>
 </module>

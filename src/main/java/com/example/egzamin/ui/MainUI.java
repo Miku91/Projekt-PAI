@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@Route("/ui/menu")
+@Route("/ui/menu/:userID?")
 public class MainUI extends VerticalLayout {
 
     @Autowired
@@ -103,14 +103,18 @@ public class MainUI extends VerticalLayout {
         verticalLayoutRight.add(label,lbl);
         horizontalLayout.add(verticalLayoutLeft,verticalLayoutRight);
         add(horizontalLayout);
+
+        grid.setItems(locationsRepository.findAll());
         refresh();
     }
 
 
     private void conf() {
-        grid.setMaxWidth("600px");
-        grid.addColumn(e -> e.getId()).setHeader("Id").setAutoWidth(true);
+        grid.setWidth("600px");
+        grid.addColumn(e -> e.getId()).setHeader("Id").setWidth("30px");
         grid.addColumn(e -> e.getAdres()).setHeader("Adres");
+
+
     }
     private void selectConf(){
         select.setLabel("Metoda optymalizacji");

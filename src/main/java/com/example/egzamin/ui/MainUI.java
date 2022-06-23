@@ -21,7 +21,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.internal.Pair;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinServletService;
+import com.vaadin.flow.server.VaadinSession;
 import org.json.JSONException;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 
 @Route("/ui/menu")
@@ -84,7 +89,6 @@ public class MainUI extends VerticalLayout {
     private Label label1 = new Label("Nie jesteś zalogowany");
 
     Locations skrytka = new Locations();
-
 
     @PostConstruct
     private void init() {
@@ -250,4 +254,6 @@ public class MainUI extends VerticalLayout {
     {
 
     }
+
+
 }

@@ -22,12 +22,12 @@ public class InitService {
     @PostConstruct
     private void init() {
         log.info("init");
-        Locations destLocation = new Locations("Profesora Sylwestra Kaliskiego 7, 85-796 Bydgoszcz", 1L);
-        Locations destLocation2 = new Locations("Generała Władysława Andersa 2, 85-796 Bydgoszcz", 1L);
-        Locations destLocation3 = new Locations("Jana Karola Chodkiewicza 30, 85-064 Bydgoszcz", 1L);
-        Locations destLocation4 = new Locations("Fordońska 430, 85-790 Bydgoszcz", 1L);
-        Locations destLocation5 = new Locations("Wojska Polskiego 1, 85-171 Bydgoszcz", 1L);
-        Locations destLocation6 = new Locations("Jagiellońska 39-47, 85-097 Bydgoszcz", 1L);
+        Locations destLocation = new Locations("Profesora Sylwestra Kaliskiego 7, 85-796 Bydgoszcz", 7L);
+        Locations destLocation2 = new Locations("Generała Władysława Andersa 2, 85-796 Bydgoszcz", 7L);
+        Locations destLocation3 = new Locations("Jana Karola Chodkiewicza 30, 85-064 Bydgoszcz", 7L);
+        Locations destLocation4 = new Locations("Fordońska 430, 85-790 Bydgoszcz", 8L);
+        Locations destLocation5 = new Locations("Wojska Polskiego 1, 85-171 Bydgoszcz", 8L);
+        Locations destLocation6 = new Locations("Jagiellońska 39-47, 85-097 Bydgoszcz", 8L);
         locationsRepository.save(destLocation);
         locationsRepository.save(destLocation2);
         locationsRepository.save(destLocation3);

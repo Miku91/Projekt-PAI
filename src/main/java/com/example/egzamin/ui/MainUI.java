@@ -58,16 +58,9 @@ public class MainUI extends VerticalLayout {
     private Button logout = new Button("Wyloguj", e->getUI().ifPresent(ui -> ui.navigate(UserLogin.class)));
     private Button login = new Button("Zaloguj się", e->getUI().ifPresent(ui -> ui.navigate(UserLogin.class)));
 
-//    private TextField destinationCity = new TextField("Miasto");
-//    private TextField destinationRoad = new TextField("Ulica");
-//    private TextField destinationBuildingNumber = new TextField("Numer budynku");
 
 
-    //private Checkbox BackToFirstLocation = new Checkbox("Back To First Location");
 
-    boolean CalculateTime,CalculateKM;
-
-    //private ComboBox combo = new ComboBox("Metoda optymalizacji","CalculateKM","CalculateTime");
 
     private Select<String> select = new Select<>();
 
@@ -80,8 +73,6 @@ public class MainUI extends VerticalLayout {
             exception.printStackTrace();
         }
     });
-    private Button addDestinationButton;
-    private Button deleteDestinationButton;
 
 
     private Label label = new Label();
@@ -92,18 +83,23 @@ public class MainUI extends VerticalLayout {
 
     @PostConstruct
     private void init() {
-        //locationsRepository.deleteAll();
-        locationsSortedRepository.deleteAll();
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-        SingleSelect<Grid<Locations>,Locations> skrytkaSingleSelect = grid.asSingleSelect();
-        skrytkaSingleSelect.addValueChangeListener(e -> {
-            skrytka = e.getValue();
-        });
+        if(VaadinServletService.getCurrentServletRequest().getSession().getAttribute("userid") != null) {
+            String test_kurier = VaadinServletService.getCurrentServletRequest().getSession().getAttribute("userid").toString();
+            System.out.println("test_kurier-"+test_kurier);
+            if (test_kurier == "0" || test_kurier == null || test_kurier == "null") {
+                verticalLayoutLeft.add(label1, login);
+                add(verticalLayoutLeft);
+                refresh();
+            } else {
+                IdKurier = Long.parseLong(test_kurier);
 
-//        addDestinationButton = new Button("Add destination", click -> addDestToGrid());
-//        deleteDestinationButton = new Button("Delete chosen destination");
-//        deleteDestinationButton.addClickListener(e -> deleteFromGrid());
-
+                //locationsRepository.deleteAll();
+                locationsSortedRepository.deleteAll();
+                grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+                SingleSelect<Grid<Locations>,Locations> skrytkaSingleSelect = grid.asSingleSelect();
+                skrytkaSingleSelect.addValueChangeListener(e -> {
+                    skrytka = e.getValue();
+                });
 
                 conf();
                 selectConf();
@@ -125,8 +121,16 @@ public class MainUI extends VerticalLayout {
                 horizontalLayout.add(verticalLayoutLeft,verticalLayoutRight);
                 add(horizontalLayout);
 
-        grid.setItems(locationsRepository.findAll());
-        refresh();
+                grid.setItems(locationsRepository.findAll().stream().filter(e -> e.getIdKuriera().equals(IdKurier)));
+                refresh();
+            }
+        } else {
+            verticalLayoutLeft.add(label1, login);
+            add(verticalLayoutLeft);
+            refresh();
+        }
+
+
     }
 
 
@@ -142,22 +146,8 @@ public class MainUI extends VerticalLayout {
         select.setItems("Kilometers", "Time");
         select.setValue("Kilometers");
     }
-    private void addDestToGrid(){
-//        Locations destLocation = new Locations(destinationCity.getValue()+" "+destinationRoad.getValue()+" "+destinationBuildingNumber.getValue());
-//        locationsRepository.save(destLocation);
-        grid.setItems(locationsRepository.findAll());
 
-//        destinationCity.clear();
-//        destinationRoad.clear();
-//        destinationBuildingNumber.clear();
-        grid.getDataProvider().refreshAll();
-    }
 
-    private void deleteFromGrid(){
-        locationsRepository.delete(locationsRepository.getById(grid.asSingleSelect().getValue().getId()));
-        grid.setItems(locationsRepository.findAll());
-        grid.getDataProvider().refreshAll();
-    }
 
     private void send() throws Exception {
         Geocoder geocoder = new Geocoder();
@@ -167,10 +157,13 @@ public class MainUI extends VerticalLayout {
         //Get all repo in map
         int p = 1;
         for(int k = 0; k <= locationsRepository.findTopByOrderByIdDesc().getId(); k++){
-            if(locationsRepository.existsById((long) k)){
-                adresHashMap.put(p, locationsRepository.getById((long) k).getAdres());
-                System.out.println("Hashmap ["+p+"] - "+ locationsRepository.getById((long) k).getAdres());
-                p++;
+            if(locationsRepository.existsById((long) k))
+            {
+                if(locationsRepository.getById((long) k).getIdKuriera() == IdKurier) {
+                    adresHashMap.put(p, locationsRepository.getById((long) k).getAdres());
+                    System.out.println("Hashmap [" + p + "] - " + locationsRepository.getById((long) k).getAdres());
+                    p++;
+                }
             }
 
         }
@@ -179,7 +172,9 @@ public class MainUI extends VerticalLayout {
         locationsRepository.findAll().stream()
                 .forEach(x -> {
                     try {
-                        adresses.add(geocoder.GeocodeSync(x.getAdres()));
+                        if(x.getIdKuriera() == IdKurier) {
+                            adresses.add(geocoder.GeocodeSync(x.getAdres()));
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
@@ -192,13 +187,13 @@ public class MainUI extends VerticalLayout {
         if(select.getValue().equals("Kilometers"))
         {
             List<Long> longs = TspCities.CalculateMatrix(distanceMatrix.usage(adresses));
-            int xdd = 0;
-            for(int i = 0; i <= locationsRepository.findTopByOrderByIdDesc().getId(); i++) {
-                if (longs.get(xdd) == 0) {
-                    xdd++;
-                } else if (locationsRepository.existsById((long) i) && xdd<=longs.size()){
-                    locationsSortedRepository.save(new LocationsSorted( longs.get(xdd), adresHashMap.get(longs.get(xdd).intValue())));
-                    xdd++;
+            int h = 0;
+            for(int i = 0; i <= adresHashMap.size(); i++) {
+                if (longs.get(h) == 0) {
+                    h++;
+                } else if (locationsRepository.existsById((long) i) && h<=longs.size()){
+                    locationsSortedRepository.save(new LocationsSorted( longs.get(h), adresHashMap.get(longs.get(h).intValue())));
+                    h++;
                 } else {
                     //sout test
                 }
@@ -213,13 +208,13 @@ public class MainUI extends VerticalLayout {
         else if(select.getValue().equals("Time"))
         {
             List<Long> longs = VrpTimeWindows.CalculateMatrixTime(distanceMatrix.usage_time(adresses));
-            int xd = 0;
-            for(int i = 0; i <= locationsRepository.findTopByOrderByIdDesc().getId(); i++) {
-                if (longs.get(xd) == 0) {
-                    xd++;
-                } else if (locationsRepository.existsById((long) i) && xd<=longs.size()){
-                    locationsSortedRepository.save(new LocationsSorted( longs.get(xd), adresHashMap.get(longs.get(xd).intValue())));
-                    xd++;
+            int l = 0;
+            for(int i = 0; i <= adresHashMap.size(); i++) {
+                if (longs.get(l) == 0) {
+                    l++;
+                } else if (locationsRepository.existsById((long) i) && l<=longs.size()){
+                    locationsSortedRepository.save(new LocationsSorted( longs.get(l), adresHashMap.get(longs.get(l).intValue())));
+                    l++;
                 } else {
                     //System.out.println("Time No ID Exists " + i);
                 }
@@ -231,7 +226,6 @@ public class MainUI extends VerticalLayout {
             textForLabel = textForLabel + " -> " + location.getValue() /*+ " ,Total Time: " + longs.get(longs.size()-1).toString() + " minutes"*/;
             label.setText(textForLabel);
         }
-        //locationsRepository.deleteById(locationsRepository.count()-1);
         String needed_waypoints = new String();
         needed_waypoints = locationsSortedRepository.findAll().stream()
                 .map(x -> x.getAdres()).collect(Collectors.joining("|"));

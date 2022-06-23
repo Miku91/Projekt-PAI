@@ -45,17 +45,9 @@ public class UserLogin extends VerticalLayout {
 
 @PostConstruct
     private void init(){
-    //mainLayout.add(loginForm);
-
-
+    VaadinServletService.getCurrentServletRequest().getSession().setAttribute("userid" , null);
     LoginFormConf();
 
-
-
-   // mainLayout.add(loginForm);
-
-
-    //add(mainLayout);
     }
 
 
@@ -104,15 +96,12 @@ public class UserLogin extends VerticalLayout {
                                     getUI().ifPresent(ui -> ui.navigate(MainUI.class));
                                     check = false;
 
-                                     //return;
                                 } else {
                                     System.out.println("wrong password");
                                     loginForm.setError(true);
-                                    //System.out.println("dziala");
                                 }
                             }else{
-                                //System.out.println("error nie ma loginu lub hasla!");
-                                //loginForm.setError(true);
+
                             }
                         }
                         } catch (Exception d) {
@@ -124,8 +113,7 @@ public class UserLogin extends VerticalLayout {
             System.out.println("error nie ma loginu lub hasla!");
             loginForm.setError(true);
         }
-        //String login = idkCoTo.getForm().getUsername();
-        //Users user = usersRepository.findByLogin(login);
+
         check = true;
     }
 

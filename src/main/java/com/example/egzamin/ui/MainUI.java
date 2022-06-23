@@ -8,6 +8,8 @@ import com.example.egzamin.models.Locations;
 import com.example.egzamin.models.LocationsSorted;
 import com.example.egzamin.repository.LocationsRepository;
 import com.example.egzamin.repository.LocationsSortedRepository;
+import com.example.egzamin.repository.UsersRepository;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
@@ -30,8 +32,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@Route("/ui/menu/:userID?")
+@Route("/ui/menu")
 public class MainUI extends VerticalLayout {
+
+
+    long IdKurier;
 
     @Autowired
     LocationsRepository locationsRepository;
@@ -44,8 +49,9 @@ public class MainUI extends VerticalLayout {
     VerticalLayout verticalLayoutLeft = new VerticalLayout();
     VerticalLayout verticalLayoutRight = new VerticalLayout();
     HorizontalLayout horizontalLayout = new HorizontalLayout();
-
-    private TextField location = new TextField("Location");
+    private TextField location = new TextField("Lokalizacja", "Aleja Prezydenta Lecha Kaczyńskiego 36, 85-806 Bydgoszcz","Podaj adres");
+    private Button logout = new Button("Wyloguj", e->getUI().ifPresent(ui -> ui.navigate(UserLogin.class)));
+    private Button login = new Button("Zaloguj się", e->getUI().ifPresent(ui -> ui.navigate(UserLogin.class)));
 
 //    private TextField destinationCity = new TextField("Miasto");
 //    private TextField destinationRoad = new TextField("Ulica");
@@ -75,6 +81,7 @@ public class MainUI extends VerticalLayout {
 
     private Label label = new Label();
     private Label lbl = new Label();
+    private Label label1 = new Label("Nie jesteś zalogowany");
 
     Locations skrytka = new Locations();
 
@@ -94,15 +101,25 @@ public class MainUI extends VerticalLayout {
 //        deleteDestinationButton.addClickListener(e -> deleteFromGrid());
 
 
-        conf();
-        selectConf();
+                conf();
+                selectConf();
+                String userLogin = usersRepository.getById(IdKurier).getLogin();
+                Label userName = new Label("Użytkownik: "+ userLogin+ "   ");
+                HorizontalLayout logowanie = new HorizontalLayout();
 
-//        destinationLayout.add(destinationCity, destinationRoad, destinationBuildingNumber);
-        underGridLayout.add(button/*, deleteDestinationButton*/);
-        verticalLayoutLeft.add(location, destinationLayout, /*addDestinationButton ,*/select,grid,underGridLayout);
-        verticalLayoutRight.add(label,lbl);
-        horizontalLayout.add(verticalLayoutLeft,verticalLayoutRight);
-        add(horizontalLayout);
+
+                logowanie.add(userName,logout);
+                logowanie.setJustifyContentMode(JustifyContentMode.CENTER);
+                logowanie.setVerticalComponentAlignment(Alignment.CENTER);
+                logowanie.setAlignItems(Alignment.CENTER);
+
+                location.setWidth("600px");
+
+                underGridLayout.add(button);
+                verticalLayoutLeft.add(logowanie, location, destinationLayout, select,grid,underGridLayout);
+                verticalLayoutRight.add(label,lbl);
+                horizontalLayout.add(verticalLayoutLeft,verticalLayoutRight);
+                add(horizontalLayout);
 
         grid.setItems(locationsRepository.findAll());
         refresh();

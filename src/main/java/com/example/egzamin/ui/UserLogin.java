@@ -10,6 +10,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParameters;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletService;
+import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -96,11 +99,9 @@ public class UserLogin extends VerticalLayout {
                             if (user.getLogin().equals(login)) {
                                 if(user.getPassword().equals(password)) {
                                     System.out.println("logged in "+ user.getLogin());
-                                    //getUI().ifPresent(ui ->
-                                            //ui.navigate("ui/menu"));
-                                    getUI().ifPresent(ui -> ui.navigate(
-                                                    MainUI.class,
-                                                    new RouteParameters("userID", String.valueOf(user.getId()))));
+                                    VaadinServletService.getCurrentServletRequest().getSession().setAttribute("userid" , user.getId());
+                                    //VaadinSession.getCurrent().setAttribute( "userid" , user.getId()) ;
+                                    getUI().ifPresent(ui -> ui.navigate(MainUI.class));
                                     check = false;
 
                                      //return;

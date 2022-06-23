@@ -18,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.internal.Pair;
 import com.vaadin.flow.router.Route;
@@ -48,6 +49,9 @@ public class MainUI extends VerticalLayout {
 
     @Autowired
     LocationsSortedRepository locationsSortedRepository;
+
+    @Autowired
+    UsersRepository usersRepository;
 
     HorizontalLayout underGridLayout = new HorizontalLayout();
     HorizontalLayout destinationLayout = new HorizontalLayout();
@@ -135,16 +139,23 @@ public class MainUI extends VerticalLayout {
 
 
     private void conf() {
-        grid.setWidth("600px");
-        grid.addColumn(e -> e.getId()).setHeader("Id").setWidth("30px");
-        grid.addColumn(e -> e.getAdres()).setHeader("Adres");
+        grid.addColumn(item -> "").setKey("rowIndex").setHeader("Id").setWidth("50px");
 
+        grid.addAttachListener(event -> {
+            grid.getColumnByKey("rowIndex").getElement().executeJs(
+                    "this.renderer = function(root, column, rowData) {root.textContent = rowData.index + 1}"
+            );
+        });
+
+        grid.setWidth("600px");
+        //grid.addColumn(TemplateRenderer.of("[[index]]")).setHeader("Id").setWidth("50px");
+        grid.addColumn(e -> e.getAdres()).setHeader("Adres").setWidth("540px");
 
     }
     private void selectConf(){
         select.setLabel("Metoda optymalizacji");
-        select.setItems("Kilometers", "Time");
-        select.setValue("Kilometers");
+        select.setItems("Kilometry", "Czas");
+        select.setValue("Kilometry");
     }
 
 
@@ -184,7 +195,7 @@ public class MainUI extends VerticalLayout {
                     }
                 });
         DistanceMatrix distanceMatrix = new DistanceMatrix();
-        if(select.getValue().equals("Kilometers"))
+        if(select.getValue().equals("Kilometry"))
         {
             List<Long> longs = TspCities.CalculateMatrix(distanceMatrix.usage(adresses));
             int h = 0;
@@ -205,7 +216,7 @@ public class MainUI extends VerticalLayout {
             textForLabel = textForLabel + " -> " + location.getValue() /*+ longs.get(longs.size()-1).toString() + " kilometers"*/;
             label.setText(textForLabel);
         }
-        else if(select.getValue().equals("Time"))
+        else if(select.getValue().equals("Czas"))
         {
             List<Long> longs = VrpTimeWindows.CalculateMatrixTime(distanceMatrix.usage_time(adresses));
             int l = 0;

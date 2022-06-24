@@ -38,5 +38,11 @@ public class InitService {
         Users newUser2 = new Users("pracownik2", "pass2");
         usersRepository.save(newUser1);
         usersRepository.save(newUser2);
+
+
+        Locations destLocation7 = new Locations("Szubińska 32, 85-312 Bydgoszcz", 8L);
+        Locations destLocation8 = new Locations("Księdza Augusta Szamarzewskiego 54, 85-543 Bydgoszcz", 8L);
+        locationsRepository.save(destLocation7);
+        locationsRepository.save(destLocation8);
     }
 }
